@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SIGNLINK - Voice to Sign</title>
+  <style>
+    body { background:#2c2f48; color:#f0f0f0; font-family:'Segoe UI',sans-serif; text-align:center; }
+    header { background:#3c3f5f; padding:2rem; border-bottom:4px solid #ab47bc; }
+    header h1{ color:#ab47bc; font-size:2.5rem; }
+    .content{ padding:3rem 2rem; }
+    .input-box{ background:#40435d; border-radius:12px; padding:2rem; width:600px; margin:2rem auto; box-shadow:0 4px 12px rgba(0,0,0,0.4); }
+    .mic-btn{ background:#ab47bc; color:white; padding:1.2rem 2rem; border-radius:50%; border:none; font-size:1.5rem; cursor:pointer; transition:0.3s;}
+    .mic-btn:hover{ background:#6a1b9a; transform:scale(1.1);}
+    .recognized-text { margin-top:1rem; font-size:1.2rem; color:#ffca28; }
+    .sign-output { margin-top:2rem; display:flex; flex-wrap:wrap; justify-content:center; gap:15px;}
+    .sign-output img { width:120px; height:120px; object-fit:cover; background:#fff; border-radius:12px; padding:8px; opacity:0; transform:scale(0.8); transition:all 0.4s ease;}
+    .sign-output img.show { opacity:1; transform:scale(1); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎙️ Voice to Sign</h1>
+    <p>Speak something — we spell it out in signs.</p>
+  </header>
+
+  <div class="content">
+    <div class="input-box">
+      <button class="mic-btn" onclick="startRecognition()">🎤</button>
+      <div id="output" class="recognized-text">Click mic & speak...</div>
+      <div id="signs" class="sign-output"></div>
+    </div>
+    <a href="/" style="color:#fff">⬅ Back to Home</a>
+  </div>
+
+  <script>
+    function startRecognition() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Sorry, your browser doesn't support Speech Recognition.");
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        document.getElementById("output").innerText = "🎙️ Listening...";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("output").innerText = "✅ You said: " + transcript;
+
+        // send text -> Flask backend
+        fetch("/voice_to_sign", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: transcript })
+        })
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("signs");
+          container.innerHTML = ""; // clear old
+
+          let i = 0;
+          function showNext() {
+            if (i < data.signs.length) {
+              const img = document.createElement("img");
+              img.src = data.signs[i];
+              container.appendChild(img);
+
+              // add show class after small delay -> trigger animation
+              setTimeout(() => { img.classList.add("show"); }, 50);
+
+              i++;
+              setTimeout(showNext, 700); // 700ms delay per image
+            }
+          }
+          showNext();
+        })
+        .catch(err => {
+          document.getElementById("signs").innerText = "❌ Error: " + err;
+        });
+      };
+
+      recognition.start();
+    }
+  </script>
+</body>
+</html>

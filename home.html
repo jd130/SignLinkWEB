@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SIGNLINK - Sign to Text & Voice to Sign Translator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #2c2f48; /* Dark Indigo base */
+      color: #f0f0f0;       /* Soft light text (no white) */
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #3c3f5f;
+      border-bottom: 4px solid #ff9800; /* Orange accent underline */
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ffca28; /* Warm gold heading */
+    }
+
+    header p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+      opacity: 0.9;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.3s;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .btn-sign {
+      background: #29b6f6; /* Blue accent */
+      color: #1a1a1a;
+    }
+
+    .btn-sign:hover {
+      background: #0288d1;
+      color: #fff;
+    }
+
+    .btn-voice {
+      background: #ab47bc; /* Purple accent */
+      color: #f0f0f0;
+    }
+
+    .btn-voice:hover {
+      background: #6a1b9a;
+      color: #fff;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      padding: 3rem 2rem;
+    }
+
+    .card {
+      background: #40435d; /* Dark but not black */
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 240px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+    }
+
+    .card h3 {
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+      color: #ff9800; /* Orange accent for card headings */
+    }
+
+    .card p {
+      opacity: 0.85;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      background: #1c1d2b;
+      color: #aaa;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    /* Responsive */
+    @media(max-width:768px){
+      header h1 {
+        font-size: 2.2rem;
+      }
+      .buttons {
+        flex-direction: column;
+      }
+      .btn {
+        width: 80%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SIGNLINK</h1>
+    <p>Sign ↔ Text and Voice ↔ Sign Translator</p>
+    <p><strong>“Let’s reduce inequalities together.”</strong></p>
+    <div class="buttons">
+      <a href="/sign" class="btn btn-sign">✋ Sign to Text</a>
+      <a href="/voice" class="btn btn-voice">🎙️ Voice to Sign</a>
+    </div>
+  </header>
+
+  <section class="features">
+    <div class="card">
+      <h3>🤟 Sign to Text</h3>
+      <p>Convert live sign language gestures into readable text instantly.</p>
+    </div>
+    <div class="card">
+      <h3>🔊 Voice to Sign</h3>
+      <p>Turn spoken words into animated sign displays for accessibility.</p>
+    </div>
+    <div class="card">
+      <h3>⚡ Real-Time</h3>
+      <p>Fast communication for smooth live translations.</p>
+    </div>
+    <div class="card">
+      <h3>🌍 Accessibility</h3>
+      <p>Bridge barriers and make communication equal for everyone.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 SIGNLINK | Building bridges between communities.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SIGNLINK - Sign to Text</title>
+  <style>
+    body{ background:#2c2f48;color:#f0f0f0;font-family:'Segoe UI',sans-serif;text-align:center;}
+    header{background:#3c3f5f;padding:2rem;border-bottom:4px solid #29b6f6;}
+    header h1{color:#29b6f6;font-size:2.5rem;}
+    .content{padding:2rem;}
+    video{border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,.5);}
+    #prediction{margin-top:1rem;font-size:1.3rem;color:#ffca28;}
+    #sentence{margin-top:1rem;font-size:1.5rem;color:#29b6f6;font-weight:bold;}
+    .btn{
+      background:#29b6f6; color:#fff;
+      padding:10px 20px; margin-top:20px;
+      border:none; border-radius:6px;
+      font-weight:bold; cursor:pointer;
+    }
+    .btn:hover{background:#1e88e5;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>✋ Sign to Text</h1>
+    <p>Perform your gestures in front of webcam — we'll build a sentence</p>
+  </header>
+
+  <div class="content">
+    <video id="webcam" autoplay playsinline width="640" height="480"></video>
+    <div id="prediction">Prediction: ...</div>
+    <div id="sentence">Sentence: ...</div>
+    <button class="btn" onclick="resetSentence()">🗑 Clear Sentence</button>
+    <br><br>
+    <a href="/" style="color:white">⬅ Back to Home</a>
+  </div>
+
+  <script>
+    const video = document.getElementById("webcam");
+    const predBox = document.getElementById("prediction");
+    const sentenceBox = document.getElementById("sentence");
+
+    // Start webcam
+    navigator.mediaDevices.getUserMedia({ video:true })
+      .then(stream => {
+        video.srcObject = stream;
+        console.log("✅ Webcam started");
+      })
+      .catch(err => alert("Webcam error: " + err));
+
+    // Send frames every 200ms (~5fps)
+    setInterval(() => {
+      if(video.videoWidth && video.videoHeight){
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video,0,0);
+        canvas.toBlob(blob=>{
+          const fd=new FormData();
+          fd.append("frame", blob, "frame.jpg");
+          fetch("/predict_frame",{method:"POST",body:fd})
+            .then(res=>res.json())
+            .then(data => {
+              console.log("Server response:", data); // DEBUG
+              if(data.prediction){
+                predBox.innerText = "Prediction: " + data.prediction;
+                sentenceBox.innerText = "Sentence: " + (data.sentence || "");
+              }
+            })
+            .catch(err => console.error("Fetch error:", err));
+        },"image/jpeg");
+      }
+    }, 200);
+
+    // Reset sentence
+    function resetSentence(){
+      fetch("/reset_sentence", {method:"POST"})
+      .then(()=> {
+        sentenceBox.innerText = "Sentence: ";
+        predBox.innerText = "Prediction: ...";
+      });
+    }
+  </script>
+</body>
+</html>
